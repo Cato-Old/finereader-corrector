@@ -6,6 +6,7 @@ from time import sleep
 
 from app.handlers.abbreviation_handler import AbbreviationHandler
 from app.handlers.end_quotation_mark_handler import EndQuotationMarkHandler
+from app.handlers.paragraph_handler import ParagraphHandler
 from app.mappings import SKR, ANT, SUB, SUP
 
 FRWindow = uiautomation.WindowControl(ClassName='FineReader12MainWindowClass')
@@ -56,22 +57,14 @@ def corrector():
     normal_handlers = [
         AbbreviationHandler(),
         EndQuotationMarkHandler(),
+        ParagraphHandler(),
     ]
     while pass_count < len(text):
         if keyboard.is_pressed('esc'):
             exit()
         for hdl in normal_handlers:
             text, pass_count = hdl.handle(TextWindow, text, pass_count)
-        if pass_count > 0 and text[pass_count - 1] == '\n':
-            if text[pass_count:pass_count + 1] not in ('$', '|'):
-                TextWindow.SendKeys('$>', waitTime=0)
-                text = text.replace(text[pass_count - 1:pass_count], text[pass_count - 1:pass_count] + '$>', 1)
-                pass_count += 2
-                if text[pass_count:pass_count + 1] == '-':
-                    TextWindow.SendKeys('{Shift}({Right 2})— {Left 2}')
-                elif text[pass_count:pass_count + 2] == '—\t':
-                    TextWindow.SendKeys('{Shift}({Right 2})— {Left 2}')
-        elif text[pass_count:pass_count + 3] in (' - ', '>- ', '>-\t'):
+        if text[pass_count:pass_count + 3] in (' - ', '>- ', '>-\t'):
             first_char = text[pass_count:pass_count + 1]
             TextWindow.SendKeys('{Shift}({Right 3})' +
                                 first_char + '— ')
