@@ -4,7 +4,8 @@ import pyperclip
 import re
 from time import sleep
 
-from finereader_corrector.mappings import SKR, ANT, SUB, SUP
+from app.handlers.abbreviation_handler import AbbreviationHandler
+from app.mappings import SKR, ANT, SUB, SUP
 
 FRWindow = uiautomation.WindowControl(ClassName='FineReader12MainWindowClass')
 
@@ -51,11 +52,13 @@ def corrector():
     text = re.sub('—  ', '— ', text)
 
     pass_count = 0
+    normal_handlers = [AbbreviationHandler()]
     while pass_count < len(text):
         if keyboard.is_pressed('esc'):
             exit()
-
-        elif text[pass_count:pass_count + 2] in ('" ', '".', '",'):
+        for hdl in normal_handlers:
+            text, pass_count = hdl.handle(TextWindow, text, pass_count)
+        if text[pass_count:pass_count + 2] in ('" ', '".', '",'):
             TextWindow.SendKeys('{Shift}({Right})')
             TextWindow.SendKeys('”')
             text = text.replace(text[pass_count:pass_count + 1], '”', 1)

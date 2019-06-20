@@ -2,8 +2,8 @@ from typing import Tuple
 
 from uiautomation import PaneControl
 
-from finereader_corrector.handlers.handler import Handler
-from finereader_corrector.mappings import SKR
+from app.handlers.handler import Handler
+from app.mappings import SKR
 
 
 class AbbreviationHandler(Handler):
