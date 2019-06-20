@@ -6,6 +6,9 @@ authors = ["Wojciech Oczkowski <wojciech.oczkowski@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
+uiautomation = "^2.0"
+keyboard = "^0.13.3"
+pyperclip = "^1.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
