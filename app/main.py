@@ -62,7 +62,7 @@ def corrector():
             exit()
         for hdl in normal_handlers:
             text, pass_count = hdl.handle(TextWindow, text, pass_count)
-        if text[pass_count - 1:pass_count] == '\n':
+        if pass_count > 0 and text[pass_count - 1] == '\n':
             if text[pass_count:pass_count + 1] not in ('$', '|'):
                 TextWindow.SendKeys('$>', waitTime=0)
                 text = text.replace(text[pass_count - 1:pass_count], text[pass_count - 1:pass_count] + '$>', 1)
