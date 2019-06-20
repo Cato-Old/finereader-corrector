@@ -54,11 +54,7 @@ def corrector():
     while pass_count < len(text):
         if keyboard.is_pressed('esc'):
             exit()
-        if text[pass_count:pass_count + 3] in SKR.keys():
-            TextWindow.SendKeys('{Shift}({Right 3})')
-            TextWindow.SendKeys(SKR[text[pass_count:pass_count + 3]])
-            text = text.replace(text[pass_count:pass_count + 3], SKR[text[pass_count:pass_count + 3]], 1)
-            pass_count += 1
+
         elif text[pass_count:pass_count + 2] in ('" ', '".', '",'):
             TextWindow.SendKeys('{Shift}({Right})')
             TextWindow.SendKeys('”')
