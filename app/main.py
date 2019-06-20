@@ -5,6 +5,7 @@ import re
 from time import sleep
 
 from app.handlers.abbreviation_handler import AbbreviationHandler
+from app.handlers.end_quotation_mark_handler import EndQuotationMarkHandler
 from app.mappings import SKR, ANT, SUB, SUP
 
 FRWindow = uiautomation.WindowControl(ClassName='FineReader12MainWindowClass')
@@ -52,18 +53,16 @@ def corrector():
     text = re.sub('—  ', '— ', text)
 
     pass_count = 0
-    normal_handlers = [AbbreviationHandler()]
+    normal_handlers = [
+        AbbreviationHandler(),
+        EndQuotationMarkHandler(),
+    ]
     while pass_count < len(text):
         if keyboard.is_pressed('esc'):
             exit()
         for hdl in normal_handlers:
             text, pass_count = hdl.handle(TextWindow, text, pass_count)
-        if text[pass_count:pass_count + 2] in ('" ', '".', '",'):
-            TextWindow.SendKeys('{Shift}({Right})')
-            TextWindow.SendKeys('”')
-            text = text.replace(text[pass_count:pass_count + 1], '”', 1)
-            pass_count += 1
-        elif text[pass_count - 1:pass_count] == '\n':
+        if text[pass_count - 1:pass_count] == '\n':
             if text[pass_count:pass_count + 1] not in ('$', '|'):
                 TextWindow.SendKeys('$>', waitTime=0)
                 text = text.replace(text[pass_count - 1:pass_count], text[pass_count - 1:pass_count] + '$>', 1)
