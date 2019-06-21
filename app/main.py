@@ -8,6 +8,7 @@ from app.handlers.abbreviation_handler import AbbreviationHandler
 from app.handlers.begin_italic_handler import BeginItalicHandler
 from app.handlers.dash_handler import DashHandler
 from app.handlers.end_quotation_mark_handler import EndQuotationMarkHandler
+from app.handlers.middle_italic_handler import MiddleItalicHandler
 from app.handlers.paragraph_handler import ParagraphHandler
 from app.mappings import SKR, ANT, SUB, SUP
 
@@ -79,10 +80,11 @@ def corrector():
         if italic_pattern.State == 0:
             continue
         elif italic_pattern.State == 16:
-            print('Pierwsze znaki italicu: ' + text[pass_count - 1:pass_count + 1])
             italic_handlers = [
-                BeginItalicHandler()
+                MiddleItalicHandler(),
+                BeginItalicHandler(),
             ]
+            print('Pierwsze znaki italicu: ' + text[pass_count - 1:pass_count + 1])
             if text[pass_count - 4:pass_count - 1] in [' w ', ' — '] and pass_count > 3:
                 TextWindow.SendKeys('{Left}', waitTime=0.07)
                 TextWindow.SendKeys('{Shift}({Left 4})', waitTime=0.07)
@@ -101,13 +103,6 @@ def corrector():
                     TextWindow.SendKeys('€')
             for hdl in italic_handlers:
                 text, pass_count = hdl.handle(TextWindow, text, pass_count)
-            if pass_count > 1 and not text[pass_count - 2] in [' ', '(', '=', '>', '\t', '\n', '_', '[']:
-                old_pass = pass_count
-                while not text[pass_count - 2] in [' ', '_']:
-                    TextWindow.SendKeys('{Left}')
-                    pass_count -= 1
-                TextWindow.SendKeys('{Left}€')
-                pass_count -= 1
 #                if italic_pattern.State == 0:
 #                    n = old_pass - pass_count
 #                    TextWindow.SendKeys('{Shift}({Right ' + str(n) + '})')
@@ -115,8 +110,8 @@ def corrector():
 #                    TextWindow.SendKeys('{Right}')
 #                    pass_count += n
 #                else:
-                TextWindow.SendKeys('{Right}')
-                pass_count += 1
+#                TextWindow.SendKeys('{Right}')
+#                pass_count += 1
             else:
                 TextWindow.SendKeys('{Left}€{Right}')
             it_str = text[pass_count - 1:pass_count + 1]
