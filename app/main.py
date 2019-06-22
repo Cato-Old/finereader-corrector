@@ -4,31 +4,11 @@ import pyperclip
 import re
 from time import sleep
 
-SKR = {'A/^': 'Â', 'A/\'': 'Á', 'A/*': 'Å',
-       'a/^': 'â', 'a/\'': 'á', 'a/*': 'å', 'a/`': 'à', 'a/:': 'ä', 'a/=': 'ā', 'a/(': 'ă',
-       'E/\'': 'É', 'E/`': 'È',
-       'e/<': 'ě', 'e/\'': 'é', 'e/`': 'è', 'e/:': 'ë', 'e/=': 'ē', 'e/^': 'ê', 'e/.': 'ė',
-       'I/^': 'Î', 'I/\'': 'Í',
-       'i/^': 'î', 'i/\'': 'í', 'i/:': 'ï', 'i/=': 'ī',
-       'U/^': 'Û', 'U/\'': 'Ú', 'U/:': 'Ü',
-       'u/^': 'û', 'u/\'': 'ú', 'u/:': 'ü', 'u/"': 'ű', 'u/`': 'ù', 'u/=': 'ū', 'u/,': 'ų',
-       'O/:': 'Ö', 'O/|': 'Ø',
-       'o/:': 'ö', 'o/~': 'õ', 'o/|': 'ø', 'o/"': 'ő', 'o/e': 'œ', 'o/,': 'ǫ', 'o/^': 'ô',
-       'y/\'': 'ý', 'y/^': 'ŷ',
-       'S/<': 'Š', 's/<': 'š', 'S/,': 'Ş', 's/,': 'ş', 's/.': 'ṣ', 'S/.': 'Ṣ',
-       't/_': 'ṯ', 't/.': 'ṭ',
-       'C/<': 'Č', 'c/<': 'č', 'c/,': 'ç',
-       'r/<': 'ř',
-       'n/<': 'ň', 'n/~': 'ñ',
-       'z/<': 'ž',
-       'g/.': 'ġ', 'G/<': 'Ǧ', 'G/(': 'Ğ', 'g/(': 'ğ',
-       'h/.': 'ḥ', 'H/)': 'Ḫ', 'H/.': 'Ḥ', 'h/)': 'ḫ', 'h/_': 'ẖ',
-       'D/-': 'Đ', 'd/-': 'đ', 'd/|': 'ð', 'd/.': 'ḍ',
-       'A/E': 'Æ', 'a/e': 'æ',
-       '|/>': 'Þ', '|/s': 'ß', '|/:': 'þ', '|/)': 'ь', ']/)': 'ъ'}
-ANT = {'1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '0': '⁰'}
-SUP = {'t': 'ᵗ', 'h': 'ʰ', 's': 'ˢ', 'r': 'ʳ', 'd': 'ᵈ', 'c': 'ᶜ', 'k': 'ᵏ', 'i': 'ⁱ', 'e': 'ᵉ', 'n': 'ⁿ'}
-SUB = {'1': '₁', '2': '₂', '4': '₄', 'x': 'ₓ'}
+from app.handlers.abbreviation_handler import AbbreviationHandler
+from app.handlers.dash_handler import DashHandler
+from app.handlers.end_quotation_mark_handler import EndQuotationMarkHandler
+from app.handlers.paragraph_handler import ParagraphHandler
+from app.mappings import SKR, ANT, SUB, SUP
 
 FRWindow = uiautomation.WindowControl(ClassName='FineReader12MainWindowClass')
 
@@ -75,35 +55,17 @@ def corrector():
     text = re.sub('—  ', '— ', text)
 
     pass_count = 0
+    normal_handlers = [
+        AbbreviationHandler(),
+        EndQuotationMarkHandler(),
+        ParagraphHandler(),
+        DashHandler(),
+    ]
     while pass_count < len(text):
         if keyboard.is_pressed('esc'):
             exit()
-        if text[pass_count:pass_count + 3] in SKR.keys():
-            TextWindow.SendKeys('{Shift}({Right 3})')
-            TextWindow.SendKeys(SKR[text[pass_count:pass_count + 3]])
-            text = text.replace(text[pass_count:pass_count + 3], SKR[text[pass_count:pass_count + 3]], 1)
-            pass_count += 1
-        elif text[pass_count:pass_count + 2] in ('" ', '".', '",'):
-            TextWindow.SendKeys('{Shift}({Right})')
-            TextWindow.SendKeys('”')
-            text = text.replace(text[pass_count:pass_count + 1], '”', 1)
-            pass_count += 1
-        elif text[pass_count - 1:pass_count] == '\n':
-            if text[pass_count:pass_count + 1] not in ('$', '|'):
-                TextWindow.SendKeys('$>', waitTime=0)
-                text = text.replace(text[pass_count - 1:pass_count], text[pass_count - 1:pass_count] + '$>', 1)
-                pass_count += 2
-                if text[pass_count:pass_count + 1] == '-':
-                    TextWindow.SendKeys('{Shift}({Right 2})— {Left 2}')
-                elif text[pass_count:pass_count + 2] == '—\t':
-                    TextWindow.SendKeys('{Shift}({Right 2})— {Left 2}')
-        elif text[pass_count:pass_count + 3] in (' - ', '>- ', '>-\t'):
-            first_char = text[pass_count:pass_count + 1]
-            TextWindow.SendKeys('{Shift}({Right 3})' +
-                                first_char + '— ')
-            text = text.replace(text[pass_count:pass_count + 3],
-                                first_char + '— ', 1)
-            pass_count += 3
+        for hdl in normal_handlers:
+            text, pass_count = hdl.handle(TextWindow, text, pass_count)
 
         insCHR('|', ANT)
         insCHR('|', SUP)
