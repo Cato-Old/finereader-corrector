@@ -58,7 +58,7 @@ def corrector():
 
     pass_count = 0
     normal_handlers = [
-        AbbreviationHandler(),
+        AbbreviationHandler(Italic),
         EndQuotationMarkHandler(),
         ParagraphHandler(),
         DashHandler(),
@@ -77,12 +77,13 @@ def corrector():
         pass_count += 1
 
         italic_pattern = Italic.GetLegacyIAccessiblePattern()
+
         if italic_pattern.State == 0:
             continue
         elif italic_pattern.State == 16:
             italic_handlers = [
                 MiddleItalicHandler(),
-                BeginItalicHandler(),
+                BeginItalicHandler(Italic),
             ]
             print('Pierwsze znaki italicu: ' + text[pass_count - 1:pass_count + 1])
             if text[pass_count - 4:pass_count - 1] in [' w ', ' — '] and pass_count > 3:
@@ -112,8 +113,8 @@ def corrector():
 #                else:
 #                TextWindow.SendKeys('{Right}')
 #                pass_count += 1
-            else:
-                TextWindow.SendKeys('{Left}€{Right}')
+#            else:
+#                TextWindow.SendKeys('{Left}€{Right}')
             it_str = text[pass_count - 1:pass_count + 1]
             while italic_pattern.State == 16:
                 if text[pass_count:pass_count + 3] in SKR.keys():
