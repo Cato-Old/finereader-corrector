@@ -1,3 +1,5 @@
+import time
+
 import uiautomation
 import keyboard
 import pyperclip
@@ -137,6 +139,8 @@ def corrector():
 #            else:
             TextWindow.SendKeys('{Left}', waitTime=0)
             TextWindow.SendKeys('€{Right}', waitTime=0)
+            while italic_pattern.State == 16:
+                time.sleep(0.001)
     return text
 
 
