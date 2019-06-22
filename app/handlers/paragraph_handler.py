@@ -12,8 +12,7 @@ class ParagraphHandler(Handler):
         if pass_count > 0 and text[pass_count - 1] == '\n':
             if text[pass_count] not in ('$', '|'):
                 text_window.SendKeys('$>', waitTime=0)
-                text = text.replace(text[pass_count - 1],
-                                    text[pass_count - 1] + '$>', 1)
+                text = text[:pass_count] + '$>' + text[pass_count:]
                 pass_count += 2
                 if text[pass_count] in ('-', '—'):
                     text_window.SendKeys('{Shift}({Right 2})— {Left 2}',
