@@ -8,6 +8,7 @@ from app.handlers.abbreviation_handler import AbbreviationHandler
 from app.handlers.begin_italic_handler import BeginItalicHandler
 from app.handlers.dash_handler import DashHandler
 from app.handlers.end_quotation_mark_handler import EndQuotationMarkHandler
+from app.handlers.internal_italic_handler import InternalItalicHandler
 from app.handlers.middle_italic_handler import MiddleItalicHandler
 from app.handlers.paragraph_handler import ParagraphHandler
 from app.mappings import SKR, ANT, SUB, SUP
@@ -84,6 +85,7 @@ def corrector():
             italic_handlers = [
                 MiddleItalicHandler(),
                 BeginItalicHandler(Italic),
+                InternalItalicHandler(Italic),
             ]
             print('Pierwsze znaki italicu: ' + text[pass_count - 1:pass_count + 1])
             if text[pass_count - 4:pass_count - 1] in [' w ', ' — '] and pass_count > 3:
@@ -115,45 +117,26 @@ def corrector():
 #                pass_count += 1
 #            else:
 #                TextWindow.SendKeys('{Left}€{Right}')
-            it_str = text[pass_count - 1:pass_count + 1]
-            while italic_pattern.State == 16:
-                if text[pass_count:pass_count + 3] in SKR.keys():
-                    TextWindow.SendKeys('{Shift}({Right 3})')
-                    TextWindow.SendKeys(SKR[text[pass_count:pass_count + 3]])
-                    text = text.replace(text[pass_count:pass_count + 3], SKR[text[pass_count:pass_count + 3]], 1)
-                    pass_count += 1
-                    continue
-
-                insCHR('|', SUP)
-
-                TextWindow.SendKeys('{Right}', waitTime=0)
-                pass_count += 1
-
-                if pass_count >= len(text):
-                    Italic.GetInvokePattern().Invoke()
-                    TextWindow.SendKeys('€')
-                    break
-                it_str += text[pass_count]
-            if it_str:
-                it_str = it_str[:-2]
-            else:
-                continue
-            print(it_str)
-            if it_str[-1] in [',', '.', ' ', ';']:
-                if it_str[-3:] in [' r.', ' w.', '...'] or it_str[-4:] == ' al.' or it_str[-5:] == ' cit.':
-                    TextWindow.SendKeys('{Left}€{Right}', waitTime=0.01)
-                else:
-                    TextWindow.SendKeys('{Left 2}')
-                    Italic.GetInvokePattern().Invoke()
-                    TextWindow.SendKeys('€{Right 2}')
-            elif it_str[-2:] == ', ':
-                print(it_str)
-                TextWindow.SendKeys('{Left 3}€{Right 3}', waitTime=0.01)
-            else:
-                TextWindow.SendKeys('{Left}', waitTime=0.01)
-                Italic.GetInvokePattern().Invoke()
-                TextWindow.SendKeys('€', waitTime=0.01)
-                pass_count -= 1
+#            it_str = text[pass_count - 1:pass_count + 1]
+#
+#            if it_str:
+#                it_str = it_str[:-2]
+#            else:
+#                continue
+#            print(it_str)
+#            if it_str[-1] in [',', '.', ' ', ';']:
+#                if it_str[-3:] in [' r.', ' w.', '...'] or it_str[-4:] == ' al.' or it_str[-5:] == ' cit.':
+#                    TextWindow.SendKeys('{Left}€{Right}', waitTime=0.01)
+#                else:
+#                    TextWindow.SendKeys('{Left 2}')
+#                    Italic.GetInvokePattern().Invoke()
+#                    TextWindow.SendKeys('€{Right 2}')
+#            elif it_str[-2:] == ', ':
+#                print(it_str)
+#                TextWindow.SendKeys('{Left 3}€{Right 3}', waitTime=0.01)
+#            else:
+            TextWindow.SendKeys('{Left}', waitTime=0)
+            TextWindow.SendKeys('€{Right}', waitTime=0)
     return text
 
 
