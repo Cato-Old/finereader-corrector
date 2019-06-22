@@ -1,5 +1,3 @@
-import time
-
 import uiautomation
 import keyboard
 import pyperclip
@@ -9,6 +7,7 @@ from time import sleep
 from app.handlers.abbreviation_handler import AbbreviationHandler
 from app.handlers.begin_italic_handler import BeginItalicHandler
 from app.handlers.dash_handler import DashHandler
+from app.handlers.end_italic_handler import EndItalicHandler
 from app.handlers.end_quotation_mark_handler import EndQuotationMarkHandler
 from app.handlers.internal_italic_handler import InternalItalicHandler
 from app.handlers.middle_italic_handler import MiddleItalicHandler
@@ -88,6 +87,7 @@ def corrector():
                 MiddleItalicHandler(),
                 BeginItalicHandler(Italic),
                 InternalItalicHandler(Italic),
+                EndItalicHandler(Italic),
             ]
             print('Pierwsze znaki italicu: ' + text[pass_count - 1:pass_count + 1])
             if text[pass_count - 4:pass_count - 1] in [' w ', ' — '] and pass_count > 3:
@@ -137,10 +137,6 @@ def corrector():
 #                print(it_str)
 #                TextWindow.SendKeys('{Left 3}€{Right 3}', waitTime=0.01)
 #            else:
-            TextWindow.SendKeys('{Left}', waitTime=0)
-            TextWindow.SendKeys('€{Right}', waitTime=0)
-            while italic_pattern.State == 16:
-                time.sleep(0.001)
     return text
 
 

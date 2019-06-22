@@ -18,7 +18,7 @@ class InternalItalicHandler(Handler):
         while self.it_access.State == 16:
             text, pass_count = self.abb_hdl.handle(text_window,
                                                    text, pass_count)
-            text_window.SendKeys('{Right}', waitTime=0.01)
+            text_window.SendKeys('{Right}', waitTime=0)
             pass_count += 1
 
             if pass_count >= len(text):
