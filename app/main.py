@@ -12,14 +12,19 @@ from app.handlers.end_quotation_mark_handler import EndQuotationMarkHandler
 from app.handlers.internal_italic_handler import InternalItalicHandler
 from app.handlers.middle_italic_handler import MiddleItalicHandler
 from app.handlers.paragraph_handler import ParagraphHandler
-from app.mappings import SKR, ANT, SUB, SUP
+from app.mappings import ANT, SUB, SUP
 
 FRWindow = uiautomation.WindowControl(ClassName='FineReader12MainWindowClass')
 
-Italic = uiautomation.ButtonControl(searchFromControl=FRWindow, Name='Kursywa (Ctrl+I)')
-TextWindow = uiautomation.PaneControl(searchFromControl=FRWindow, ClassName='$FineReaderEditorClass$')
-CopyButtonControl = uiautomation.ButtonControl(searchFromControl=FRWindow, Name='Kopiuj (Ctrl+C)')
-PageListControl = uiautomation.ListControl(searchFromControl=FRWindow, ClassName='SysListView32', AutomationId='3080')
+Italic = uiautomation.ButtonControl(searchFromControl=FRWindow,
+                                    Name='Kursywa (Ctrl+I)')
+TextWindow = uiautomation.PaneControl(searchFromControl=FRWindow,
+                                      ClassName='$FineReaderEditorClass$')
+CopyButtonControl = uiautomation.ButtonControl(searchFromControl=FRWindow,
+                                               Name='Kopiuj (Ctrl+C)')
+PageListControl = uiautomation.ListControl(searchFromControl=FRWindow,
+                                           ClassName='SysListView32',
+                                           AutomationId='3080')
 
 
 def insCHR(precode, Dict):

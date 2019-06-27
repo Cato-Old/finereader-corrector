@@ -11,7 +11,7 @@ class DashHandler(Handler):
                text: str, pass_count: int) -> Tuple[str, int]:
         if text[pass_count:pass_count + 3] in (' - ', '>- ', '>-\t'):
             new_dash = text[pass_count] + '— '
-            text_window.SendKeys('{Shift}({Right 3})' + new_dash)
+            text_window.SendKeys('{Shift}({Right 3})' + new_dash, waitTime=0)
             text = text.replace(text[pass_count:pass_count + 3], new_dash, 1)
             pass_count += 3
         return text, pass_count
