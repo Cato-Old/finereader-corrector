@@ -4,14 +4,7 @@ import pyperclip
 import re
 from time import sleep
 
-from app.handlers.abbreviation_handler import AbbreviationHandler
-from app.handlers.begin_italic_handler import BeginItalicHandler
-from app.handlers.dash_handler import DashHandler
-from app.handlers.end_italic_handler import EndItalicHandler
-from app.handlers.end_quotation_mark_handler import EndQuotationMarkHandler
-from app.handlers.internal_italic_handler import InternalItalicHandler
-from app.handlers.middle_italic_handler import MiddleItalicHandler
-from app.handlers.paragraph_handler import ParagraphHandler
+from app.initializing import handlers_initialize
 from app.mappings import ANT, SUB, SUP
 
 FRWindow = uiautomation.WindowControl(ClassName='FineReader12MainWindowClass')
@@ -48,6 +41,7 @@ def insCHR(precode, Dict):
 
 def corrector():
     global text, pass_count
+    normal_handlers, italic_handlers = handlers_initialize(Italic)
 
     TextWindow.SetFocus()
     sleep(1)
@@ -64,12 +58,6 @@ def corrector():
     text = re.sub('—  ', '— ', text)
 
     pass_count = 0
-    normal_handlers = [
-        AbbreviationHandler(Italic),
-        EndQuotationMarkHandler(),
-        ParagraphHandler(),
-        DashHandler(),
-    ]
     while pass_count < len(text):
         if keyboard.is_pressed('esc'):
             exit()
@@ -88,12 +76,6 @@ def corrector():
         if italic_pattern.State == 0:
             continue
         elif italic_pattern.State == 16:
-            italic_handlers = [
-                MiddleItalicHandler(),
-                BeginItalicHandler(Italic),
-                InternalItalicHandler(Italic),
-                EndItalicHandler(Italic),
-            ]
             print('Pierwsze znaki italicu: ' + text[pass_count - 1:pass_count + 1])
             if text[pass_count - 4:pass_count - 1] in [' w ', ' — '] and pass_count > 3:
                 TextWindow.SendKeys('{Left}', waitTime=0.07)

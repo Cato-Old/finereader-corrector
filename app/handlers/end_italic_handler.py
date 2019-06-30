@@ -15,7 +15,7 @@ class EndItalicHandler(Handler):
                text: str, pass_count: int) -> Tuple[str, int]:
         text_window.SendKeys('{Left}', waitTime=0)
         offset = 1
-        if text[pass_count-2] in (' ', '.'):
+        if text[pass_count-2] in (' ', '.', ','):
             text_window.SendKeys('{Left}', waitTime=0)
             offset += 1
         text_window.SendKeys(f'€{{Right {offset}}}', waitTime=0)
