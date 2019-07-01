@@ -15,7 +15,7 @@ class BeginItalicHandler(Handler):
 
     def handle(self, text_window: PaneControl,
                text: str, pass_count: int) -> Tuple[str, int]:
-        if text[pass_count - 1] in (' ', '>'):
+        if text[pass_count - 1] in (' ', '>', '('):
             text_window.SendKeys('€', waitTime=0)
             text, pass_count = self.abb_hdl.handle(text_window,
                                                    text, pass_count)
