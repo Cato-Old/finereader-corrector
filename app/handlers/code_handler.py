@@ -15,14 +15,7 @@ class CodeHandler(Handler):
                text: str, pass_count: int) -> Tuple[str, int]:
         keys = [self.precode + key for key in self.dict.keys()]
         if text[pass_count:pass_count + 2] in keys:
-            n = -1
-            while True:
-                n += 1
-                code = slice(pass_count + 1 + n,
-                             pass_count + 2 + n)
-                if text[code] not in self.dict.keys():
-                    n -= 1
-                    break
+            n = self.__count_chars(text, pass_count)
             text_window.SendKeys('{Shift}({Right ' + str(2 + n) + '})',
                                  waitTime=0)
             chars_new = ''
@@ -33,3 +26,14 @@ class CodeHandler(Handler):
                                 chars_new, 1)
             pass_count += 1 + n
         return text, pass_count
+
+    def __count_chars(self, text: str, pass_count: int) -> int:
+        n = 0
+        while True:
+            char = slice(pass_count + 1 + n,
+                         pass_count + 2 + n)
+            if text[char] not in self.dict.keys():
+                break
+            else:
+                n += 1
+        return n
