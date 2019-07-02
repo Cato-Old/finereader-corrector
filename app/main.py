@@ -20,25 +20,6 @@ PageListControl = uiautomation.ListControl(searchFromControl=FRWindow,
                                            AutomationId='3080')
 
 
-def insCHR(precode, Dict):
-    global text, pass_count
-
-    if text[pass_count:pass_count + 2] in [precode + key for key in Dict.keys()]:
-        n = -1
-        while True:
-            n += 1
-            if text[pass_count + 1 + n:pass_count + 2 + n] not in Dict.keys():
-                n -= 1
-                break
-        TextWindow.SendKeys('{Shift}({Right ' + str(2 + n) + '})')
-        chars_new = ''
-        for char in text[pass_count + 1:pass_count + 2 + n]:
-            chars_new += Dict[char]
-        TextWindow.SendKeys(chars_new)
-        text = text.replace(text[pass_count:pass_count + 2 + n], chars_new, 1)
-        pass_count += 1 + n
-
-
 def corrector():
     global text, pass_count
     normal_handlers, italic_handlers = handlers_initialize(Italic)
@@ -63,10 +44,6 @@ def corrector():
             exit()
         for hdl in normal_handlers:
             text, pass_count = hdl.handle(TextWindow, text, pass_count)
-
-        insCHR('|', ANT)
-        insCHR('|', SUP)
-        insCHR('▼', SUB)
 
         TextWindow.SendKeys('{Right}', waitTime=0, interval=0)
         pass_count += 1
