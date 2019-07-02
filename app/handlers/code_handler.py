@@ -16,15 +16,15 @@ class CodeHandler(Handler):
         keys = [self.precode + key for key in self.dict.keys()]
         if text[pass_count:pass_count + 2] in keys:
             n = self.__count_chars(text, pass_count)
-            text_window.SendKeys('{Shift}({Right ' + str(2 + n) + '})',
+            text_window.SendKeys('{Shift}({Right ' + str(1 + n) + '})',
                                  waitTime=0)
             chars_new = ''
-            for char in text[pass_count + 1:pass_count + 2 + n]:
+            for char in text[pass_count + 1:pass_count + 1 + n]:
                 chars_new += self.dict[char]
             text_window.SendKeys(chars_new, waitTime=0)
-            text = text.replace(text[pass_count:pass_count + 2 + n],
+            text = text.replace(text[pass_count:pass_count + 1 + n],
                                 chars_new, 1)
-            pass_count += 1 + n
+            pass_count += n
         return text, pass_count
 
     def __count_chars(self, text: str, pass_count: int) -> int:
