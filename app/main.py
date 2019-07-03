@@ -5,7 +5,6 @@ import re
 from time import sleep
 
 from app.initializing import handlers_initialize
-from app.mappings import ANT, SUB, SUP
 
 FRWindow = uiautomation.WindowControl(ClassName='FineReader12MainWindowClass')
 
