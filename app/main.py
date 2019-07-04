@@ -5,32 +5,23 @@ import re
 from time import sleep
 
 from app.initializing import handlers_initialize
-
-FRWindow = uiautomation.WindowControl(ClassName='FineReader12MainWindowClass')
-
-Italic = uiautomation.ButtonControl(searchFromControl=FRWindow,
-                                    Name='Kursywa (Ctrl+I)')
-TextWindow = uiautomation.PaneControl(searchFromControl=FRWindow,
-                                      ClassName='$FineReaderEditorClass$')
-CopyButtonControl = uiautomation.ButtonControl(searchFromControl=FRWindow,
-                                               Name='Kopiuj (Ctrl+C)')
-PageListControl = uiautomation.ListControl(searchFromControl=FRWindow,
-                                           ClassName='SysListView32',
-                                           AutomationId='3080')
+from app.initializing import ui_automation_initialize
 
 
-def corrector():
+def corrector(italic: uiautomation.ButtonControl,
+              text_window: uiautomation.PaneControl,
+              copy_button_control: uiautomation.ButtonControl) -> str:
     global text, pass_count
-    normal_handlers, italic_handlers = handlers_initialize(Italic)
+    normal_handlers, italic_handlers = handlers_initialize(italic)
 
-    TextWindow.SetFocus()
+    text_window.SetFocus()
     sleep(1)
-    TextWindow.SendKeys('{Ctrl}{Home}')
+    text_window.SendKeys('{Ctrl}{Home}')
     sleep(1)
-    TextWindow.SendKeys('{Shift}{Ctrl}{End}')
-    CopyButtonControl.Click(simulateMove=False, waitTime=1)
+    text_window.SendKeys('{Shift}{Ctrl}{End}')
+    copy_button_control.Click(simulateMove=False, waitTime=1)
     sleep(1)
-    TextWindow.SendKeys('{Left}')
+    text_window.SendKeys('{Left}')
 
     text = pyperclip.paste()
     text = re.sub('\r\n', '\n', text)
@@ -42,35 +33,35 @@ def corrector():
         if keyboard.is_pressed('esc'):
             exit()
         for hdl in normal_handlers:
-            text, pass_count = hdl.handle(TextWindow, text, pass_count)
+            text, pass_count = hdl.handle(text_window, text, pass_count)
 
-        TextWindow.SendKeys('{Right}', waitTime=0, interval=0)
+        text_window.SendKeys('{Right}', waitTime=0, interval=0)
         pass_count += 1
 
-        italic_pattern = Italic.GetLegacyIAccessiblePattern()
+        italic_pattern = italic.GetLegacyIAccessiblePattern()
 
         if italic_pattern.State == 0:
             continue
         elif italic_pattern.State == 16:
             print('Pierwsze znaki italicu: ' + text[pass_count - 1:pass_count + 1])
             if text[pass_count - 4:pass_count - 1] in [' w ', ' — '] and pass_count > 3:
-                TextWindow.SendKeys('{Left}', waitTime=0.07)
-                TextWindow.SendKeys('{Shift}({Left 4})', waitTime=0.07)
-                CopyButtonControl.Click(simulateMove=False)
-                TextWindow.SendKeys('{Right}')
+                text_window.SendKeys('{Left}', waitTime=0.07)
+                text_window.SendKeys('{Shift}({Left 4})', waitTime=0.07)
+                copy_button_control.Click(simulateMove=False)
+                text_window.SendKeys('{Right}')
                 test = pyperclip.paste()
                 print(test)
                 if test[0] == '€':
-                    TextWindow.SendKeys('{Left 3}{Back}{Right 4}')
+                    text_window.SendKeys('{Left 3}{Back}{Right 4}')
                 else:
-                    TextWindow.SendKeys('€{Right}')
+                    text_window.SendKeys('€{Right}')
             elif text[pass_count - 1:pass_count + 1] == ', ':
-                TextWindow.SendKeys('{Right}')
+                text_window.SendKeys('{Right}')
                 pass_count += 1
                 if italic_pattern.State == 16:
-                    TextWindow.SendKeys('€')
+                    text_window.SendKeys('€')
             for hdl in italic_handlers:
-                text, pass_count = hdl.handle(TextWindow, text, pass_count)
+                text, pass_count = hdl.handle(text_window, text, pass_count)
 #                if italic_pattern.State == 0:
 #                    n = old_pass - pass_count
 #                    TextWindow.SendKeys('{Shift}({Right ' + str(n) + '})')
@@ -103,15 +94,24 @@ def corrector():
     return text
 
 
-FRWindow.SetActive()
-Pages = PageListControl.GetChildren()
-if Pages[0].ControlTypeName == 'ScrollBarControl':
-    PagesScrollBar = Pages[0]
-    Pages = Pages[1:]
-for page in Pages:
-    if keyboard.is_pressed('esc'):
-        exit()
-    if page.IsOffscreen:
-        PagesScrollBar.WheelDown()
-    page.Click()
-    t = corrector()
+def main(fr_window: uiautomation.WindowControl,
+         italic: uiautomation.ButtonControl,
+         text_window: uiautomation.PaneControl,
+         copy_button_control: uiautomation.ButtonControl,
+         page_list_control: uiautomation.ListControl
+         ) -> None:
+    fr_window.SetActive()
+    pages = page_list_control.GetChildren()
+    if pages[0].ControlTypeName == 'ScrollBarControl':
+        pages_scroll_bar = pages[0]
+        pages = pages[1:]
+    for page in pages:
+        if keyboard.is_pressed('esc'):
+            exit()
+        if page.IsOffscreen:
+            pages_scroll_bar.WheelDown()
+        page.Click()
+        t = corrector(italic, text_window, copy_button_control)
+
+
+main(*ui_automation_initialize())

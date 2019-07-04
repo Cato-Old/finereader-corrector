@@ -21,10 +21,10 @@ class CodeHandler(Handler):
             chars_new = ''
             for char in text[pass_count + 1:pass_count + 1 + n]:
                 chars_new += self.dict[char]
-            text_window.SendKeys(chars_new, waitTime=0)
+            text_window.SendKeys(chars_new + '{Left}', waitTime=0)
             text = text.replace(text[pass_count:pass_count + 1 + n],
                                 chars_new, 1)
-            pass_count += n
+            pass_count += n-1
         return text, pass_count
 
     def __count_chars(self, text: str, pass_count: int) -> int:
