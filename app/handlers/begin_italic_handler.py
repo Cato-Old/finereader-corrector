@@ -3,6 +3,7 @@ from typing import Tuple
 
 from uiautomation import PaneControl, ButtonControl
 
+from app.cursor.cursor import Cursor
 from app.handlers.abbreviation_handler import AbbreviationHandler
 from app.handlers.handler import Handler
 
@@ -15,7 +16,8 @@ class BeginItalicHandler(Handler):
 
     def handle(self, text_window: PaneControl,
                text: str, pass_count: int) -> Tuple[str, int]:
-        if text[pass_count - 1] in (' ', '>', '('):
+        cur = Cursor(pass_count)
+        if text[cur.slice(-1)] in (' ', '>', '('):
             text_window.SendKeys('€', waitTime=0)
             text, pass_count = self.abb_hdl.handle(text_window,
                                                    text, pass_count)

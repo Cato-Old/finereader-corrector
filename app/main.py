@@ -15,13 +15,13 @@ def corrector(italic: uiautomation.ButtonControl,
     normal_handlers, italic_handlers = handlers_initialize(italic)
 
     text_window.SetFocus()
-    sleep(1)
+    sleep(0.5)
     text_window.SendKeys('{Ctrl}{Home}')
-    sleep(1)
+    sleep(0.5)
     text_window.SendKeys('{Shift}{Ctrl}{End}')
     copy_button_control.Click(simulateMove=False, waitTime=1)
-    sleep(1)
-    text_window.SendKeys('{Left}')
+    sleep(0.5)
+    text_window.SendKeys('{Left}', waitTime=0)
 
     text = pyperclip.paste()
     text = re.sub('\r\n', '\n', text)
