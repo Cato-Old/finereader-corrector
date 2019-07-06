@@ -9,12 +9,16 @@ class TextPosition:
 
     def __getitem__(self, ind: Union[slice, int]) -> str:
         try:
-            return self.text[self.pos + ind.start :
+            return self.text[self.pos + ind.start:
                              self.pos + ind.stop]
         except AttributeError:
             return self.text[self.pos + ind]
 
     def __add__(self, delta: int) -> 'TextPosition':
+        self.pos = self.pos + delta
+        return self
+
+    def __iadd__(self, delta: int) -> 'TextPosition':
         self.pos = self.pos + delta
         return self
 
