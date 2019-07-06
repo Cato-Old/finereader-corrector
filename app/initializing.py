@@ -1,8 +1,12 @@
+import re
+from time import sleep
 from typing import Tuple, List
 
+import pyperclip
 from uiautomation import (ButtonControl, WindowControl, uiautomation,
                           PaneControl, ListControl)
 
+from app.cursor import TextPosition
 from app.handlers.abbreviation_handler import AbbreviationHandler
 from app.handlers.begin_italic_handler import BeginItalicHandler
 from app.handlers.code_handler import CodeHandler
@@ -52,3 +56,23 @@ def ui_automation_initialize()-> Tuple[WindowControl, ButtonControl,
         AutomationId='3080')
     return (fr_window, italic, text_window, copy_button_control,
             page_list_control)
+
+
+def text_position_initialise(
+        text_window: PaneControl,
+        copy_button_control: ButtonControl) -> TextPosition:
+    text_window.SetFocus()
+    sleep(0.5)
+    text_window.SendKeys('{Ctrl}{Home}')
+    sleep(0.5)
+    text_window.SendKeys('{Shift}{Ctrl}{End}')
+    copy_button_control.Click(simulateMove=False, waitTime=1)
+    sleep(0.5)
+    text_window.SendKeys('{Left}', waitTime=0)
+
+    text = pyperclip.paste()
+    text = re.sub('\r\n', '\n', text)
+    text = re.sub('\n+', '\n', text)
+    text = re.sub('—  ', '— ', text)
+
+    return TextPosition(text, 0)

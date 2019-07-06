@@ -4,7 +4,7 @@ import pyperclip
 import re
 from time import sleep
 
-from app.initializing import handlers_initialize
+from app.initializing import handlers_initialize, text_position_initialise
 from app.initializing import ui_automation_initialize
 
 
@@ -13,22 +13,9 @@ def corrector(italic: uiautomation.ButtonControl,
               copy_button_control: uiautomation.ButtonControl) -> str:
     global text, pass_count
     normal_handlers, italic_handlers = handlers_initialize(italic)
+    text, pass_count = text_position_initialise(text_window,
+                                                copy_button_control)
 
-    text_window.SetFocus()
-    sleep(0.5)
-    text_window.SendKeys('{Ctrl}{Home}')
-    sleep(0.5)
-    text_window.SendKeys('{Shift}{Ctrl}{End}')
-    copy_button_control.Click(simulateMove=False, waitTime=1)
-    sleep(0.5)
-    text_window.SendKeys('{Left}', waitTime=0)
-
-    text = pyperclip.paste()
-    text = re.sub('\r\n', '\n', text)
-    text = re.sub('\n+', '\n', text)
-    text = re.sub('—  ', '— ', text)
-
-    pass_count = 0
     while pass_count < len(text):
         if keyboard.is_pressed('esc'):
             exit()

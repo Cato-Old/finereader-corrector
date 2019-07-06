@@ -14,6 +14,10 @@ class TextPosition:
         except AttributeError:
             return self.text[self.pos + ind]
 
+    def __iter__(self):
+        args = (self.text, self.pos)
+        return iter(args)
+
     def __add__(self, delta: int) -> 'TextPosition':
         self.pos = self.pos + delta
         return self
