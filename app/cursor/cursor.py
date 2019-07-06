@@ -1,10 +1,15 @@
-class Cursor:
+from typing import Union
 
-    def __init__(self, pass_count: int) -> None:
+
+class TextPosition:
+
+    def __init__(self, text: str, pass_count: int) -> None:
+        self.text = text
         self.pos = pass_count
 
-    def slice(self, start: int, stop: int = None) -> slice:
-        if stop:
-            return slice(self.pos + start, self.pos + stop)
-        else:
-            return slice(self.pos + start, self.pos + start + 1)
+    def __getitem__(self, ind: Union[slice, int]) -> str:
+        try:
+            return self.text[self.pos + ind.start :
+                             self.pos + ind.stop]
+        except AttributeError:
+            return self.text[self.pos + ind]
