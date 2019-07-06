@@ -1,17 +1,16 @@
-from typing import Tuple
-
 from uiautomation import PaneControl
 
+from app.cursor import TextPosition
 from app.handlers.handler import Handler
 
 
 class MiddleItalicHandler(Handler):
 
     def handle(self, text_window: PaneControl,
-               text: str, pass_count: int) -> Tuple[str, int]:
+               text_pos: TextPosition) -> TextPosition:
         stop_chars = (' ', '(', '=', '>', '\t', '\n', '_', '[')
-        if pass_count > 1 and not text[pass_count - 1] in stop_chars:
-            while not text[pass_count - 1] in stop_chars:
+        if text_pos[-1] not in stop_chars:
+            while text_pos[-1] not in stop_chars:
                 text_window.SendKeys('{Left}', waitTime=0)
-                pass_count -= 1
-        return text, pass_count
+                text_pos -= 1
+        return text_pos

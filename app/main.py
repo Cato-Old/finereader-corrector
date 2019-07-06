@@ -1,8 +1,6 @@
 import uiautomation
 import keyboard
 import pyperclip
-import re
-from time import sleep
 
 from app.initializing import handlers_initialize, text_position_initialise
 from app.initializing import ui_automation_initialize
@@ -11,27 +9,25 @@ from app.initializing import ui_automation_initialize
 def corrector(italic: uiautomation.ButtonControl,
               text_window: uiautomation.PaneControl,
               copy_button_control: uiautomation.ButtonControl) -> str:
-    global text, pass_count
     normal_handlers, italic_handlers = handlers_initialize(italic)
-    text, pass_count = text_position_initialise(text_window,
-                                                copy_button_control)
+    text_pos = text_position_initialise(text_window, copy_button_control)
 
-    while pass_count < len(text):
+    while text_pos.pos < len(text_pos.text):
         if keyboard.is_pressed('esc'):
             exit()
         for hdl in normal_handlers:
-            text, pass_count = hdl.handle(text_window, text, pass_count)
+            text_pos = hdl.handle(text_window, text_pos)
 
         text_window.SendKeys('{Right}', waitTime=0, interval=0)
-        pass_count += 1
+        text_pos += 1
 
         italic_pattern = italic.GetLegacyIAccessiblePattern()
 
         if italic_pattern.State == 0:
             continue
         elif italic_pattern.State == 16:
-            print('Pierwsze znaki italicu: ' + text[pass_count - 1:pass_count + 1])
-            if text[pass_count - 4:pass_count - 1] in [' w ', ' — '] and pass_count > 3:
+            print('Pierwsze znaki italicu: ' + text_pos[-1:1])
+            if text_pos[-4:-1] in [' w ', ' — ']:
                 text_window.SendKeys('{Left}', waitTime=0.07)
                 text_window.SendKeys('{Shift}({Left 4})', waitTime=0.07)
                 copy_button_control.Click(simulateMove=False)
@@ -42,13 +38,13 @@ def corrector(italic: uiautomation.ButtonControl,
                     text_window.SendKeys('{Left 3}{Back}{Right 4}')
                 else:
                     text_window.SendKeys('€{Right}')
-            elif text[pass_count - 1:pass_count + 1] == ', ':
+            elif text_pos[-1:1] == ', ':
                 text_window.SendKeys('{Right}')
-                pass_count += 1
+                text_pos += 1
                 if italic_pattern.State == 16:
                     text_window.SendKeys('€')
             for hdl in italic_handlers:
-                text, pass_count = hdl.handle(text_window, text, pass_count)
+                text_pos = hdl.handle(text_window, text_pos)
 #                if italic_pattern.State == 0:
 #                    n = old_pass - pass_count
 #                    TextWindow.SendKeys('{Shift}({Right ' + str(n) + '})')
@@ -78,7 +74,7 @@ def corrector(italic: uiautomation.ButtonControl,
 #                print(it_str)
 #                TextWindow.SendKeys('{Left 3}€{Right 3}', waitTime=0.01)
 #            else:
-    return text
+    return text_pos.text
 
 
 def main(fr_window: uiautomation.WindowControl,

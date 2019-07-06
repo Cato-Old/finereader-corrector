@@ -2,6 +2,7 @@ from typing import Tuple
 
 from uiautomation import PaneControl, ButtonControl
 
+from app.cursor import TextPosition
 from app.handlers.abbreviation_handler import AbbreviationHandler
 from app.handlers.handler import Handler
 
@@ -14,15 +15,14 @@ class InternalItalicHandler(Handler):
         self.abb_hdl = AbbreviationHandler(italic)
 
     def handle(self, text_window: PaneControl,
-               text: str, pass_count: int) -> Tuple[str, int]:
+               text_pos: TextPosition) -> TextPosition:
         while self.it_access.State == 16:
-            text, pass_count = self.abb_hdl.handle(text_window,
-                                                   text, pass_count)
+            text_pos = self.abb_hdl.handle(text_window, text_pos)
             text_window.SendKeys('{Right}', waitTime=0)
-            pass_count += 1
+            text_pos += 1
 
-            if pass_count >= len(text):
+            if text_pos.pos >= len(text_pos.text):
                 self.it_invoke.Invoke()
                 text_window.SendKeys('€', waitTime=0.01)
                 break
-        return text, pass_count
+        return text_pos

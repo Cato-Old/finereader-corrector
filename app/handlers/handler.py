@@ -3,10 +3,13 @@ from typing import Tuple
 
 from uiautomation import PaneControl
 
+from app.cursor import TextPosition
+
 
 class Handler(ABC):
 
     @abstractmethod
-    def handle(self, text_window: PaneControl,
-               text: str, pass_count: int) -> Tuple[str, int]:
+    def handle(self,
+               text_window: PaneControl,
+               text_pos: TextPosition) -> TextPosition:
         pass

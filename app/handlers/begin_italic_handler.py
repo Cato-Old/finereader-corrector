@@ -15,15 +15,12 @@ class BeginItalicHandler(Handler):
         self.abb_hdl = AbbreviationHandler(italic)
 
     def handle(self, text_window: PaneControl,
-               text: str, pass_count: int) -> Tuple[str, int]:
-        text_pos = TextPosition(text, pass_count)
+               text_pos: TextPosition) -> TextPosition:
         if text_pos[-1] in (' ', '>', '('):
             text_window.SendKeys('€', waitTime=0)
-            text_pos.text, text_pos.pos = self.abb_hdl.handle(text_window,
-                                                              text_pos.text,
-                                                              text_pos.pos)
+            text_pos = self.abb_hdl.handle(text_window, text_pos)
             text_window.SendKeys('{Right}', waitTime=0)
             text_pos += 1
             while self.it_access.State == 0:
                 time.sleep(0.001)
-        return text_pos.text, text_pos.pos
+        return text_pos

@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 
 class TextPosition:
@@ -7,12 +7,19 @@ class TextPosition:
         self.text = text
         self.pos = pass_count
 
-    def __getitem__(self, ind: Union[slice, int]) -> str:
+    def __getitem__(self, ind: Union[slice, int]) -> Optional[str]:
         try:
-            return self.text[self.pos + ind.start:
-                             self.pos + ind.stop]
+            target_inds = (self.pos + ind.start, self.pos + ind.stop)
+            if all(map(lambda x: x >= 0, target_inds)):
+                return self.text[target_inds[0]:target_inds[1]]
+            else:
+                return None
         except AttributeError:
-            return self.text[self.pos + ind]
+            target_ind = self.pos + ind
+            if target_ind >= 0:
+                return self.text[target_ind]
+            else:
+                return None
 
     def __iter__(self):
         args = (self.text, self.pos)
@@ -26,3 +33,13 @@ class TextPosition:
         self.pos = self.pos + delta
         return self
 
+    def __sub__(self, delta: int) -> 'TextPosition':
+        self.pos = self.pos - delta
+        return self
+
+    def __isub__(self, delta: int) -> 'TextPosition':
+        self.pos = self.pos - delta
+        return self
+
+    def insert(self, ins: str) -> None:
+        self.text = self.text[:self.pos] + ins + self.text[self.pos:]
