@@ -29,7 +29,7 @@ def handlers_initialize(
                        ParagraphHandler(),
                        DashHandler(),
                        ]
-    italic_handlers = [MiddleItalicHandler(),
+    italic_handlers = [MiddleItalicHandler(italic),
                        BeginItalicHandler(italic, copy_button_control),
                        InternalItalicHandler(italic),
                        EndItalicHandler(italic),
