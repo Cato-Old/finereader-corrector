@@ -20,15 +20,17 @@ from app.handlers.paragraph_handler import ParagraphHandler
 from app.mappings import ANT, SUB, SUP
 
 
-def handlers_initialize(italic: ButtonControl)-> Tuple[List[Handler],
-                                                       List[Handler]]:
+def handlers_initialize(
+        italic: ButtonControl,
+        copy_button_control: ButtonControl)-> Tuple[List[Handler],
+                                                    List[Handler]]:
     normal_handlers = [AbbreviationHandler(italic),
                        EndQuotationMarkHandler(),
                        ParagraphHandler(),
                        DashHandler(),
                        ]
     italic_handlers = [MiddleItalicHandler(),
-                       BeginItalicHandler(italic),
+                       BeginItalicHandler(italic, copy_button_control),
                        InternalItalicHandler(italic),
                        EndItalicHandler(italic),
                        ]

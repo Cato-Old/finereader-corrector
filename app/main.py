@@ -1,3 +1,5 @@
+from time import sleep
+
 import uiautomation
 import keyboard
 import pyperclip
@@ -9,12 +11,21 @@ from app.initializing import ui_automation_initialize
 def corrector(italic: uiautomation.ButtonControl,
               text_window: uiautomation.PaneControl,
               copy_button_control: uiautomation.ButtonControl) -> str:
-    normal_handlers, italic_handlers = handlers_initialize(italic)
+    normal_handlers, italic_handlers = handlers_initialize(
+        italic, copy_button_control)
     text_pos = text_position_initialise(text_window, copy_button_control)
 
     while text_pos.pos < len(text_pos.text):
         if keyboard.is_pressed('esc'):
             exit()
+        if keyboard.is_pressed('f11'):
+            while keyboard.is_pressed('f11'):
+                sleep(0.01)
+            while not keyboard.is_pressed('f11'):
+                sleep(0.01)
+            while keyboard.is_pressed('f11'):
+                sleep(0.01)
+                
         for hdl in normal_handlers:
             text_pos = hdl.handle(text_window, text_pos)
 
@@ -37,7 +48,7 @@ def corrector(italic: uiautomation.ButtonControl,
                 if test[0] == '€':
                     text_window.SendKeys('{Left 3}{Back}{Right 4}')
                 else:
-                    text_window.SendKeys('€{Right}')
+                    text_window.SendKeys('{Right}')
             elif text_pos[-1:1] == ', ':
                 text_window.SendKeys('{Right}')
                 text_pos += 1
