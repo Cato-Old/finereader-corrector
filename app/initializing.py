@@ -12,7 +12,8 @@ from app.handlers.begin_italic_handler import BeginItalicHandler
 from app.handlers.code_handler import CodeHandler
 from app.handlers.dash_handler import DashHandler
 from app.handlers.end_italic_handler import EndItalicHandler
-from app.handlers.end_quotation_mark_handler import EndQuotationMarkHandler
+from app.handlers.quotation_mark_handlers import EndQuotationMarkHandler, \
+    BeginQuotationMarkHandler
 from app.handlers.handler import Handler
 from app.handlers.internal_italic_handler import InternalItalicHandler
 from app.handlers.middle_italic_handler import MiddleItalicHandler
@@ -25,6 +26,7 @@ def handlers_initialize(
         copy_button_control: ButtonControl)-> Tuple[List[Handler],
                                                     List[Handler]]:
     normal_handlers = [AbbreviationHandler(italic),
+                       BeginQuotationMarkHandler(),
                        EndQuotationMarkHandler(),
                        ParagraphHandler(),
                        DashHandler(),
