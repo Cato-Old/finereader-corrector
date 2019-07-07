@@ -20,7 +20,6 @@ class EndItalicHandler(Handler):
         self.it_invoke.Invoke(waitTime=0)
         if offset > 0:
             text_window.SendKeys('{Left}', waitTime=0)
-            self.it_invoke.Invoke(waitTime=0)
         text_window.SendKeys(f'€{{Right {offset}}}', waitTime=0)
         while self.it_access.State == 16:
             time.sleep(0.001)
