@@ -27,7 +27,7 @@ class EndItalicHandler(Handler):
 
     @staticmethod
     def __set_offset(text_pos: TextPosition) -> int:
-        if text_pos[-3:-1] in ('. ', ', '):
+        if text_pos[-3:-1] in ('. ', ', ', '),'):
             return 2
         elif text_pos[-3:-1] in ('..'):
             return 0
