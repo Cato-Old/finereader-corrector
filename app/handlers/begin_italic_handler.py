@@ -29,7 +29,7 @@ class BeginItalicHandler(Handler):
                 text_window.SendKeys('{Left 3}{Back}{Right 4}')
             else:
                 text_window.SendKeys('{Right}')
-        if text_pos[-1] in (' ', '>', '('):
+        if text_pos[-1] in (' ', '>', '(') or text_pos.pos == 0:
             text_window.SendKeys('€', waitTime=0)
             text_pos = self.abb_hdl.handle(text_window, text_pos)
             text_window.SendKeys('{Right}', waitTime=0)
