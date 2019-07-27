@@ -9,4 +9,3 @@ def forward(text_pos: TextPosition, count: int) -> TextPosition:
     except AttributeError as err:
         print(err)
     return text_pos
-

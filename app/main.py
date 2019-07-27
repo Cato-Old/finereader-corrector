@@ -7,6 +7,7 @@ import pyperclip
 from app import cursor
 from app.initializing import handlers_initialize, text_position_initialise
 from app.initializing import ui_automation_initialize
+from app.keyboard_mapping import KeyboardMapping
 
 
 def corrector(italic: uiautomation.ButtonControl,
@@ -17,8 +18,7 @@ def corrector(italic: uiautomation.ButtonControl,
     text_pos = text_position_initialise(text_window, copy_button_control)
 
     while text_pos.pos < len(text_pos.text):
-        if keyboard.is_pressed('esc'):
-            exit()
+        KeyboardMapping.exit_app()
         if keyboard.is_pressed('f11'):
             while keyboard.is_pressed('f11'):
                 sleep(0.01)
