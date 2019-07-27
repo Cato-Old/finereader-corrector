@@ -1,11 +1,19 @@
 from typing import Union, Optional
 
+from uiautomation.uiautomation import PaneControl
+
 
 class TextPosition:
 
-    def __init__(self, text: str, pass_count: int) -> None:
+    def __init__(
+            self,
+            text: str,
+            pass_count: int,
+            text_window: PaneControl = None
+    ) -> None:
         self.text = text
         self.pos = pass_count
+        self.text_window = text_window
 
     def __getitem__(self, ind: Union[slice, int]) -> Optional[str]:
         try:

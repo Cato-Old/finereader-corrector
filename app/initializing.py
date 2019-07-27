@@ -79,4 +79,4 @@ def text_position_initialise(
     text = re.sub('\n+', '\n', text)
     text = re.sub('—  ', '— ', text)
 
-    return TextPosition(text, 0)
+    return TextPosition(text, 0, text_window=text_window)

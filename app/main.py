@@ -4,6 +4,7 @@ import uiautomation
 import keyboard
 import pyperclip
 
+from app import cursor
 from app.initializing import handlers_initialize, text_position_initialise
 from app.initializing import ui_automation_initialize
 
@@ -29,8 +30,7 @@ def corrector(italic: uiautomation.ButtonControl,
         for hdl in normal_handlers:
             text_pos = hdl.handle(text_window, text_pos)
 
-        text_window.SendKeys('{Right}', waitTime=0, interval=0)
-        text_pos += 1
+        text_pos = cursor.forward(text_pos, 1)
 
         italic_pattern = italic.GetLegacyIAccessiblePattern()
 
