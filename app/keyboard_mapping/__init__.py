@@ -1,3 +1,3 @@
-from app.keyboard_mapping.keyboard_mapping import KeyboardMapping
+from app.keyboard_mapping.keyboard_mapping import KeyboardMappings
 
-__all__ = ['KeyboardMapping', ]
+__all__ = ['KeyboardMappings', ]
