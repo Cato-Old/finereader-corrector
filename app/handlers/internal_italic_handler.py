@@ -21,8 +21,8 @@ class InternalItalicHandler(Handler):
             text_window.SendKeys('{Right}', waitTime=0)
             text_pos += 1
 
-            if text_pos.pos >= len(text_pos.text):
+            if text_pos.pos >= len(text_pos.text) or text_pos[0] == '\n':
                 self.it_invoke.Invoke()
-                text_window.SendKeys('€', waitTime=0.01)
                 break
+
         return text_pos

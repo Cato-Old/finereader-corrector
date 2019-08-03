@@ -14,7 +14,11 @@ class EndItalicHandler(Handler):
 
     def handle(self, text_window: PaneControl,
                text_pos: TextPosition) -> TextPosition:
-        text_window.SendKeys('{Left}', waitTime=0)
+        if text_pos[0] != '\n':
+            text_window.SendKeys('{Left}', waitTime=0)
+        else:
+            text_window.SendKeys('€', waitTime=0)
+            return text_pos
         offset = self.__set_offset(text_pos)
         text_window.SendKeys(f'{{Shift}}({{Left {offset}}})', waitTime=0)
         self.it_invoke.Invoke(waitTime=0)
